@@ -11,7 +11,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://bhavesh-iiud.github.io/iiud-website",
+  "homepage": "https://bhaveshbhavsar1334-bit.github.io/My-int",
   "dependencies": {
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.475.0",

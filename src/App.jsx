@@ -17,7 +17,8 @@ import {
   CheckCircle,
   ExternalLink,
   User,
-  Lock
+  Lock,
+  MessageCircle
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -29,7 +30,7 @@ const fadeInUp = {
 
 // Removed unused staggerContainer
 
-const heroImage = "/hero_bg.jpg"; 
+const heroImage = `${import.meta.env.BASE_URL}hero_indian.png`;
 
 function App() {
   const [activeNewsTab, setActiveNewsTab] = useState('All news');
@@ -38,6 +39,27 @@ function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' });
   const [formSent, setFormSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [courseSearch, setCourseSearch] = useState('');
+
+  const coursesData = [
+    { title: 'B.Tech in Computer Science', category: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=500' },
+    { title: 'B.Pharm (Pharmacy)', category: 'MEDICAL', img: `${import.meta.env.BASE_URL}bpharm.png` },
+    { title: 'BCA (Computer Applications)', category: 'IT', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500' },
+    { title: 'BBA (Business Administration)', category: 'MANAGEMENT', img: `${import.meta.env.BASE_URL}bba.png` },
+    { title: 'Cybersecurity & Ethical Hacking', category: 'IT', img: `${import.meta.env.BASE_URL}cybersecurity.png` },
+    { title: 'B.Com (Commerce)', category: 'COMMERCE', img: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=500' },
+    { title: 'B.A in Psychology', category: 'ARTS', img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=500' },
+    { title: 'MBBS (Medicine)', category: 'MEDICAL', img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=500' },
+    { title: 'Data Science and AI', category: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=500' },
+    { title: 'Global Finance & MBA', category: 'MANAGEMENT', img: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=500' },
+    { title: 'Civil and Robotics Engineering', category: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=500' }
+  ];
+
+  const filteredCourses = coursesData.filter(course => 
+    course.title.toLowerCase().includes(courseSearch.toLowerCase()) ||
+    course.category.toLowerCase().includes(courseSearch.toLowerCase())
+  );
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -45,11 +67,36 @@ function App() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setFormSent(true);
-    setTimeout(() => setFormSent(false), 4000);
-    setFormState({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+
+    // Replace this URL with your Google Apps Script Web App URL after deployment
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwdESCCC0bVArcibNKVhoSjOz6OsCuJS3-6bCXHZdywcc1wgrLZ125bExzLPq9vSziG1A/exec";
+
+    try {
+      const formData = new FormData();
+      formData.append('Name', formState.name);
+      formData.append('Email', formState.email);
+      formData.append('Subject', formState.subject);
+      formData.append('Message', formState.message);
+      formData.append('Date', new Date().toLocaleString());
+
+      await fetch(GOOGLE_SHEET_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // Google Apps Script requires no-cors for simple POST
+      });
+
+      setFormSent(true);
+      setFormState({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setFormSent(false), 5000);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("There was an error sending your message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const navLinks = [
@@ -70,8 +117,8 @@ function App() {
         <div className="container nav-inner">
           {/* Logo */}
           <a href="#about" className="nav-brand">
-            <img src="/logo.png" alt="IIUD Logo" className="nav-logo-img" />
-            <span className="nav-logo-text">International Islamic University Dubai</span>
+            <img src={`${import.meta.env.BASE_URL}logo_v2.png`} alt="Academic Excellence Logo" className="nav-logo-img" />
+            <span className="nav-logo-text">Academic Excellence<br/><small style={{ fontSize: '0.65rem', opacity: 0.7, fontWeight: 500, letterSpacing: '1px' }}>INSTITUTE OF INDIA</small></span>
           </a>
 
           {/* Desktop Links */}
@@ -125,12 +172,12 @@ function App() {
         <div className="hero-overlay"></div>
         <div className="container">
           <motion.div {...fadeInUp} className="hero-content">
-            <h1 className="hero-title">International Islamic University Dubai.</h1>
+            <h1 className="hero-title">Build Your Future with Expert Guidance</h1>
+            <p style={{ fontSize: '1.2rem', marginBottom: '32px', opacity: 0.9 }}>Academic Excellence Institute of India</p>
             <div className="hero-nav-buttons">
-              <a href="#admission" className="hero-btn active"><Users size={18} /> Admission</a>
-              <a href="#courses" className="hero-btn"><Search size={18} /> Courses</a>
-              <a href="#faculty" className="hero-btn"><GraduationCap size={18} /> Faculty</a>
-              <a href="#about" className="hero-btn"><BookOpen size={18} /> Schools</a>
+              <a href="#admission" className="hero-btn active" style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none' }}><Users size={18} /> Enroll Now</a>
+              <a href="#contact-section" className="hero-btn"><Search size={18} /> Contact Us</a>
+              <a href="#courses" className="hero-btn"><GraduationCap size={18} /> Courses</a>
             </div>
           </motion.div>
         </div>
@@ -156,7 +203,7 @@ function App() {
                     <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=200" alt="Student" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div>
-                    <p style={{ fontWeight: '700' }}>Ahmed Ali</p>
+                    <p style={{ fontWeight: '700' }}>Rahul Sharma</p>
                     <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>MBA Graduate</p>
                   </div>
                </div>
@@ -353,28 +400,45 @@ function App() {
         <div className="container">
           <div style={{ marginBottom: '60px' }}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '24px' }}>Search for a course</h2>
-            <div style={{ display: 'flex', gap: '0' }}>
-               <input type="text" placeholder="Search by keyword..." style={{ flex: 1, padding: '16px 24px', border: '1px solid var(--outline-variant)', borderRadius: '4px 0 0 4px', fontSize: '1rem' }} />
-               <button style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '0 32px', borderRadius: '0 4px 4px 0', fontWeight: '700', cursor: 'pointer' }}>SEARCH</button>
+            <div className="course-search-bar">
+               <input 
+                 type="text" 
+                 placeholder="Search by keyword (e.g. BTech, MBBS, Medical)..." 
+                 className="course-search-input"
+                 value={courseSearch}
+                 onChange={(e) => setCourseSearch(e.target.value)}
+               />
+               <button className="course-search-btn">SEARCH</button>
             </div>
           </div>
+          
           <div className="course-grid">
-            {[
-              { title: 'Data Science and AI', img: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=500' },
-              { title: 'Global Finance & MBA', img: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=500' },
-              { title: 'Civil and Robotics Engineering', img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=500' }
-            ].map((course, idx) => (
-              <div key={idx} className="course-card">
-                <img src={course.img} alt={course.title} className="course-image" />
-                <div className="course-content">
-                  <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '700' }}>UNDERGRADUATE</span>
-                  <h3 style={{ margin: '8px 0 16px' }}>{course.title}</h3>
-                  <a href="#admission" style={{ color: 'var(--secondary)', fontWeight: '600', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    Apply to Program <ArrowRight size={14} />
-                  </a>
-                </div>
+            {filteredCourses.length > 0 ? (
+              filteredCourses.map((course, idx) => (
+                <motion.div 
+                  key={idx} 
+                  className="course-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: (idx % 3) * 0.1 }}
+                >
+                  <img src={course.img} alt={course.title} className="course-image" />
+                  <div className="course-content">
+                    <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '700' }}>{course.category}</span>
+                    <h3 style={{ margin: '8px 0 16px', fontSize: '1.25rem' }}>{course.title}</h3>
+                    <a href="#admission" style={{ color: 'var(--secondary)', fontWeight: '600', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      Apply to Program <ArrowRight size={14} />
+                    </a>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
+                <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>No courses found matching "{courseSearch}"</p>
+                <button onClick={() => setCourseSearch('')} style={{ marginTop: '16px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '700' }}>Clear Search</button>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -504,22 +568,32 @@ function App() {
                   <div className="contact-icon-box"><Mail size={20} /></div>
                   <div>
                     <p className="contact-detail-label">Email Us</p>
-                    <p className="contact-detail-value">info@iiud.ac.ae</p>
+                    <p className="contact-detail-value">info@iiui.ac.in</p>
                   </div>
                 </div>
                 <div className="contact-detail-item">
                   <div className="contact-icon-box"><Phone size={20} /></div>
                   <div>
                     <p className="contact-detail-label">Call Us</p>
-                    <p className="contact-detail-value">+971 4 123 4567</p>
+                    <p className="contact-detail-value">+91 120 123 4567</p>
                   </div>
                 </div>
                 <div className="contact-detail-item">
                   <div className="contact-icon-box"><MapPin size={20} /></div>
                   <div>
                     <p className="contact-detail-label">Visit Us</p>
-                    <p className="contact-detail-value">123 University Ave, Dubai Knowledge Park</p>
+                    <p className="contact-detail-value">Plot No. 4, Knowledge Park III, Greater Noida, UP, India</p>
                   </div>
+                </div>
+                
+                {/* Mobile Quick Actions */}
+                <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
+                  <a href="tel:+911201234567" style={{ flex: 1, padding: '12px', backgroundColor: 'var(--primary)', color: 'white', textDecoration: 'none', textAlign: 'center', borderRadius: '8px', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', minHeight: '44px' }}>
+                    <Phone size={18} /> Call Us
+                  </a>
+                  <a href="https://wa.me/911201234567" target="_blank" rel="noreferrer" style={{ flex: 1, padding: '12px', backgroundColor: '#25D366', color: 'white', textDecoration: 'none', textAlign: 'center', borderRadius: '8px', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', minHeight: '44px' }}>
+                    <MessageCircle size={18} /> WhatsApp
+                  </a>
                 </div>
               </div>
             </div>
@@ -582,8 +656,14 @@ function App() {
                         onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
                       />
                     </div>
-                    <button type="submit" className="form-submit-btn">
-                      <Send size={16} /> Send Message
+                     <button type="submit" className="form-submit-btn" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>Processing...</>
+                      ) : (
+                        <>
+                          <Send size={16} /> Send Message
+                        </>
+                      )}
                     </button>
                   </motion.form>
                 )}
@@ -596,14 +676,17 @@ function App() {
       {/* Footer */}
       <footer id="contacts">
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
-             <img src="/logo.png" alt="IIUD Logo" style={{ width: '60px', height: '60px', objectFit: 'contain', borderRadius: '4px' }} />
-             <h3 style={{ color: 'white', fontFamily: 'var(--font-headline)', fontSize: '1.5rem' }}>International Islamic University Dubai</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+             <img src={`${import.meta.env.BASE_URL}logo_v2.png`} alt="Academic Excellence Logo" style={{ width: '80px', height: '80px', objectFit: 'contain' }} />
+             <div>
+                <h3 style={{ color: 'white', fontFamily: 'var(--font-headline)', fontSize: '1.8rem', lineHeight: 1.1 }}>Academic Excellence</h3>
+                <p style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '2px', marginTop: '4px' }}>INSTITUTE OF INDIA</p>
+             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '80px', paddingBottom: '40px', borderBottom: '1px solid rgba(255,255,255,0.1)' }} className="footer-top">
              <div>
                 <p style={{ fontSize: '0.875rem', opacity: 0.6 }}>Our Address</p>
-                <p style={{ fontWeight: '600' }}>123 University Ave, Dubai Knowledge Park</p>
+                <p style={{ fontWeight: '600' }}>Plot No. 4, Knowledge Park III, Greater Noida, UP, India</p>
              </div>
              <div>
                 <button style={{ backgroundColor: 'var(--primary)', color: 'white', padding: '12px 24px', border: 'none', borderRadius: '4px', fontWeight: '700', cursor: 'pointer' }}>SUBSCRIBE NOW</button>
@@ -626,16 +709,16 @@ function App() {
             </div>
             <div>
                <h4 style={{ color: 'white', marginBottom: '24px' }}>University</h4>
-               <a href="#" className="footer-link">About IIUD</a>
+               <a href="#" className="footer-link">About IIUI</a>
                <a href="#" className="footer-link">Leadership</a>
                <a href="#" className="footer-link">Careers</a>
                <a href="#" className="footer-link">Governance</a>
             </div>
             <div>
                <h4 style={{ color: 'white', marginBottom: '24px' }}>Contact</h4>
-               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={14} /> info@iiud.ac.ae</div>
-               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={14} /> +971 4 123 4567</div>
-               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={14} /> Dubai, UAE</div>
+               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={14} /> info@iiui.ac.in</div>
+               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={14} /> +91 120 123 4567</div>
+               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={14} /> Greater Noida, India</div>
             </div>
           </div>
         </div>
