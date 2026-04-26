@@ -43,17 +43,48 @@ function App() {
   const [courseSearch, setCourseSearch] = useState('');
 
   const coursesData = [
-    { title: 'B.Tech in Computer Science', category: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=500' },
-    { title: 'B.Pharm (Pharmacy)', category: 'MEDICAL', img: `${import.meta.env.BASE_URL}bpharm.png` },
-    { title: 'BCA (Computer Applications)', category: 'IT', img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500' },
-    { title: 'BBA (Business Administration)', category: 'MANAGEMENT', img: `${import.meta.env.BASE_URL}bba.png` },
-    { title: 'Cybersecurity & Ethical Hacking', category: 'IT', img: `${import.meta.env.BASE_URL}cybersecurity.png` },
-    { title: 'B.Com (Commerce)', category: 'COMMERCE', img: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=500' },
-    { title: 'B.A in Psychology', category: 'ARTS', img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=500' },
-    { title: 'MBBS (Medicine)', category: 'MEDICAL', img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=500' },
-    { title: 'Data Science and AI', category: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=500' },
-    { title: 'Global Finance & MBA', category: 'MANAGEMENT', img: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=500' },
-    { title: 'Civil and Robotics Engineering', category: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=500' }
+    { 
+      title: 'B.Tech in Computer Science', 
+      category: 'ENGINEERING', 
+      duration: '4 Years',
+      desc: 'Expertise in software development, AI, and systems architecture.',
+      img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=500' 
+    },
+    { 
+      title: 'B.Pharm (Pharmacy)', 
+      category: 'MEDICAL', 
+      duration: '4 Years',
+      desc: 'Advanced pharmaceutical sciences and clinical practice.',
+      img: 'https://images.unsplash.com/photo-1576602976047-174e57a47881?auto=format&fit=crop&q=80&w=800' 
+    },
+    { 
+      title: 'BCA (Computer Applications)', 
+      category: 'IT', 
+      duration: '3 Years',
+      desc: 'Comprehensive knowledge of computer applications and logic.',
+      img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500' 
+    },
+    { 
+      title: 'BBA (Business Administration)', 
+      category: 'MANAGEMENT', 
+      duration: '3 Years',
+      desc: 'Developing future business leaders and entrepreneurs.',
+      img: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800' 
+    },
+    { 
+      title: 'Cybersecurity & Ethical Hacking', 
+      category: 'IT', 
+      duration: '6 Months',
+      desc: 'Master the art of defending digital infrastructures.',
+      img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500' 
+    },
+    { 
+      title: 'Data Science and AI', 
+      category: 'ENGINEERING', 
+      duration: '4 Years',
+      desc: 'Unlock insights from big data with machine learning.',
+      img: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=500' 
+    }
   ];
 
   const filteredCourses = coursesData.filter(course => 
@@ -71,8 +102,8 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Replace this URL with your Google Apps Script Web App URL after deployment
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwdESCCC0bVArcibNKVhoSjOz6OsCuJS3-6bCXHZdywcc1wgrLZ125bExzLPq9vSziG1A/exec";
+    // Use environment variable for the Google Apps Script Web App URL, with fallback
+    const GOOGLE_SHEET_URL = import.meta.env.VITE_GOOGLE_SHEET_URL || "https://script.google.com/macros/s/AKfycbwdESCCC0bVArcibNKVhoSjOz6OsCuJS3-6bCXHZdywcc1wgrLZ125bExzLPq9vSziG1A/exec";
 
     try {
       const formData = new FormData();
@@ -101,11 +132,17 @@ function App() {
 
   const navLinks = [
     { label: 'About', href: '#about' },
-    { label: 'Admission', href: '#admission' },
-    { label: 'Courses', href: '#courses' },
-    { label: 'Sports', href: '#sports' },
+    { 
+      label: 'Programs', 
+      href: '#courses',
+      dropdown: ['Engineering', 'Medical', 'Management', 'IT', 'Arts']
+    },
+    { 
+      label: 'Resources', 
+      href: '#news',
+      dropdown: ['Student Portal', 'Library', 'Research', 'Downloads']
+    },
     { label: 'Faculty', href: '#faculty' },
-    { label: 'News', href: '#news' },
     { label: 'Contact', href: '#contact-section' },
   ];
 
@@ -123,9 +160,18 @@ function App() {
 
           {/* Desktop Links */}
           <ul className="nav-links-desktop">
-            {navLinks.map(({ label, href }) => (
-              <li key={label}>
-                <a href={href} className="nav-link-item">{label}</a>
+            {navLinks.map(({ label, href, dropdown }) => (
+              <li key={label} className="nav-item-with-dropdown">
+                <a href={href} className="nav-link-item">
+                  {label} {dropdown && <ChevronRight size={14} className="dropdown-chevron" />}
+                </a>
+                {dropdown && (
+                  <div className="nav-dropdown">
+                    {dropdown.map(item => (
+                      <a key={item} href={href} className="dropdown-item">{item}</a>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -135,7 +181,7 @@ function App() {
             <button className="nav-search-btn" onClick={() => setLoginOpen(true)} aria-label="Student Login" title="Student Portal">
               <User size={18} />
             </button>
-            <a href="#admission" className="nav-cta-btn">Apply Now</a>
+            <a href="#admission" className="nav-cta-btn primary-cta">Apply Now</a>
             <button
               className="nav-hamburger"
               onClick={() => setMobileOpen(o => !o)}
@@ -151,109 +197,125 @@ function App() {
           {mobileOpen && (
             <motion.div
               className="mobile-drawer"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              {navLinks.map(({ label, href }) => (
-                <a key={label} href={href} className="mobile-nav-link" onClick={() => setMobileOpen(false)}>
-                  {label}
-                </a>
+              {navLinks.map(({ label, href, dropdown }) => (
+                <div key={label} className="mobile-nav-group">
+                  <a href={href} className="mobile-nav-link" onClick={() => !dropdown && setMobileOpen(false)}>
+                    {label}
+                  </a>
+                  {dropdown && (
+                    <div className="mobile-dropdown-items">
+                      {dropdown.map(item => (
+                        <a key={item} href={href} className="mobile-dropdown-link" onClick={() => setMobileOpen(false)}>
+                          {item}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
-              <a href="#admission" className="nav-cta-btn mobile-cta" onClick={() => setMobileOpen(false)}>Apply Now</a>
+              <a href="#admission" className="nav-cta-btn primary-cta mobile-cta" onClick={() => setMobileOpen(false)}>Apply Now</a>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
-      <section id="about" className="hero" style={{ backgroundImage: `url(${heroImage})` }}>
-        <div className="hero-overlay"></div>
+      <section id="about" className="hero-modern">
+        <div className="hero-background">
+          <img src={`${import.meta.env.BASE_URL}hero_bg.jpg`} alt="Education" className="hero-bg-image" />
+        </div>
         <div className="container">
-          <motion.div {...fadeInUp} className="hero-content">
-            <h1 className="hero-title">Build Your Future with Expert Guidance</h1>
-            <p style={{ fontSize: '1.2rem', marginBottom: '32px', opacity: 0.9 }}>Academic Excellence Institute of India</p>
-            <div className="hero-nav-buttons">
-              <a href="#admission" className="hero-btn active" style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none' }}><Users size={18} /> Enroll Now</a>
-              <a href="#contact-section" className="hero-btn"><Search size={18} /> Contact Us</a>
-              <a href="#courses" className="hero-btn"><GraduationCap size={18} /> Courses</a>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="hero-content-refined"
+          >
+            <span className="hero-eyebrow">WELCOME TO EXCELLENCE</span>
+            <h1 className="hero-headline">Empowering Minds, <br/><span>Shaping Futures</span></h1>
+            <p className="hero-description">
+              Discover a world-class educational experience at Academic Excellence Institute. We provide expert guidance, modern facilities, and a student-centered approach to help you achieve your dreams.
+            </p>
+            <div className="hero-actions">
+              <a href="#admission" className="cta-button gold-btn">Enroll Today</a>
+              <a href="#courses" className="secondary-button">Explore Programs</a>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Success Stories Stats */}
-      <section style={{ padding: '80px 0' }}>
+      <section className="stats-section">
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-             <h2 style={{ fontSize: '2.5rem', marginBottom: '16px' }}>Our Success 📖 stories</h2>
+          <div className="section-header-refined">
+             <h2 className="section-title-premium">Our Legacy of Success</h2>
+             <p className="section-subtitle-premium">Join thousands of students who have transformed their careers with us.</p>
           </div>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-header">
-                <span className="stat-value">10K+</span>
-                <div className="stat-icon"><Users size={20} /></div>
+          <div className="stats-grid-premium">
+            <div className="stat-card-premium">
+              <div className="stat-content">
+                <span className="stat-number">10K+</span>
+                <span className="stat-label">Regular Students</span>
               </div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--on-surface-variant)', fontWeight: '500' }}>Regular students</p>
+              <div className="stat-icon-premium"><Users size={24} /></div>
             </div>
-            <div className="stat-card" style={{ borderLeft: '4px solid var(--primary)', padding: '20px' }}>
-               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                  <div style={{ width: '60px', height: '60px', backgroundColor: '#eee', borderRadius: '4px', overflow: 'hidden' }}>
-                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=200" alt="Student" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <div>
-                    <p style={{ fontWeight: '700' }}>Rahul Sharma</p>
-                    <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>MBA Graduate</p>
+            
+            <div className="stat-card-premium highlight-card">
+               <div className="testimonial-compact">
+                  <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=200" alt="Student" className="testimonial-img" />
+                  <div className="testimonial-info">
+                    <p className="testimonial-name">Rahul Sharma</p>
+                    <p className="testimonial-role">MBA Graduate</p>
                   </div>
                </div>
             </div>
-            <div className="stat-card">
-              <div className="stat-header">
-                <span className="stat-value">48K+</span>
-                <div className="stat-icon"><Award size={20} /></div>
+
+            <div className="stat-card-premium">
+              <div className="stat-content">
+                <span className="stat-number">48K+</span>
+                <span className="stat-label">Active Alumni</span>
               </div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--on-surface-variant)', fontWeight: '500' }}>Active Alumni</p>
+              <div className="stat-icon-premium"><Award size={24} /></div>
             </div>
-            <div className="stat-card" style={{ backgroundColor: '#00695C', color: 'white' }}>
-              <div className="stat-header">
-                <span className="stat-value" style={{ color: 'white' }}>98%</span>
-                <div style={{ color: '#80CBC4' }}><Users size={20} /></div>
+
+            <div className="stat-card-premium dark-card">
+              <div className="stat-content">
+                <span className="stat-number">98%</span>
+                <span className="stat-label">Success Rate</span>
               </div>
-              <p style={{ fontSize: '0.875rem', opacity: 0.8 }}>Success Rate</p>
+              <div className="stat-icon-premium"><GraduationCap size={24} /></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* News & Updates Section */}
-      <section id="news" style={{ backgroundColor: '#1A1A1A', color: 'white', padding: '100px 0' }}>
+      <section id="news" className="news-section-premium">
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <h2 style={{ fontSize: '3rem', color: 'white' }}>• Stay touch with updates •</h2>
+          <div className="section-header-refined">
+            <h2 className="section-title-premium" style={{ color: 'white' }}>Latest from Campus</h2>
+            <p className="section-subtitle-premium" style={{ color: 'var(--slate)' }}>Stay informed about our latest achievements and announcements.</p>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginBottom: '60px' }} className="news-tabs">
+          
+          <div className="news-tabs-premium">
             {['All news', 'Admissions', 'Science'].map(tab => (
               <button 
                 key={tab}
                 onClick={() => setActiveNewsTab(tab)}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: activeNewsTab === tab ? 'var(--primary)' : 'rgba(255,255,255,0.6)',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  borderBottom: activeNewsTab === tab ? '2px solid var(--primary)' : 'none',
-                  paddingBottom: '8px'
-                }}
+                className={`news-tab-btn ${activeNewsTab === tab ? 'active' : ''}`}
               >
                 {tab}
               </button>
             ))}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center' }} className="news-content-grid">
-             <div style={{ display: 'grid', gap: '20px' }}>
+
+          <div className="news-grid-premium">
+             <div className="news-list-premium">
                 {[
                   { category: 'Admissions', tag: 'ADMISSIONS', title: 'Spring 2025 Application Window is Now Open' },
                   { category: 'Science', tag: 'RESEARCH', title: 'IIUD Scientists Discover New Desalination Method' },
@@ -264,19 +326,23 @@ function App() {
                   <motion.div 
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    style={{ padding: '24px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '8px', borderLeft: '4px solid var(--primary)' }}
+                    className="news-item-premium"
                   >
-                     <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '700' }}>{item.tag}</span>
-                     <h3 style={{ color: 'white', marginTop: '8px' }}>{item.title}</h3>
+                     <span className="news-item-tag">{item.tag}</span>
+                     <h3 className="news-item-title">{item.title}</h3>
+                     <a href="#" className="news-item-link">Read More <ArrowRight size={14} /></a>
                   </motion.div>
                 ))}
              </div>
-             <div style={{ position: 'relative' }}>
-                <img src="https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&q=80&w=800" alt="News" style={{ width: '100%', borderRadius: '8px' }} />
-                <div style={{ position: 'absolute', bottom: '24px', left: '24px', right: '24px', padding: '24px', backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: '8px' }}>
-                  <p style={{ fontWeight: '600' }}>Global Education Summit 2024 hosted at IIUD Dubai</p>
+             <div className="news-featured-premium">
+                <div className="featured-img-wrapper">
+                  <img src="https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&q=80&w=800" alt="News" />
+                  <div className="featured-overlay-premium">
+                    <span className="featured-tag">FEATURED STORY</span>
+                    <h3 className="featured-title">Global Education Summit 2024 hosted at IIUD Dubai</h3>
+                  </div>
                 </div>
              </div>
           </div>
@@ -336,29 +402,34 @@ function App() {
         </div>
       </section>
 
-      {/* Find your way Section */}
-      <section id="faculty" style={{ padding: '120px 0' }}>
+      {/* Faculty Section */}
+      <section id="faculty" className="faculty-section-premium">
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '80px' }} className="section-header">
-             <h2 style={{ fontSize: '3rem' }}>Find your way</h2>
-             <div style={{ display: 'flex', gap: '8px' }}>
-                <a href="#courses" style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem' }}>Discover Courses</a>
-                <button style={{ background: 'none', border: '1px solid var(--outline-variant)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Department</button>
-             </div>
+          <div className="section-header-refined">
+             <h2 className="section-title-premium">Our Distinguished Faculty</h2>
+             <p className="section-subtitle-premium">Learn from industry experts and renowned academics dedicated to your success.</p>
           </div>
-          <div className="profile-grid">
+          <div className="faculty-grid-premium">
             {[
               { name: 'Dr. Fatima Zahra', role: 'Dean of Science', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300' },
               { name: 'Prof. Omar Khalid', role: 'Head of MBA', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300' },
               { name: 'Dr. Sarah Smith', role: 'Admissions Lead', img: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&q=80&w=300' },
               { name: 'Engr. Hassan Noor', role: 'Research Hub', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300' }
             ].map((profile, idx) => (
-              <motion.div key={idx} {...fadeInUp} className="profile-card">
-                <div className="profile-image-container">
-                  <img src={profile.img} alt={profile.name} className="profile-image" />
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="faculty-card-premium"
+              >
+                <div className="faculty-image-wrapper">
+                  <img src={profile.img} alt={profile.name} className="faculty-image" />
                 </div>
-                <h4 style={{ fontSize: '1.25rem', marginBottom: '4px' }}>{profile.name}</h4>
-                <p style={{ fontSize: '0.875rem', opacity: 0.6 }}>{profile.role}</p>
+                <div className="faculty-info">
+                  <h4 className="faculty-name">{profile.name}</h4>
+                  <p className="faculty-role">{profile.role}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -366,28 +437,28 @@ function App() {
       </section>
 
       {/* Sports & Recreation Section */}
-      <section id="sports" style={{ padding: '100px 0', backgroundColor: '#fff' }}>
+      <section id="sports" className="sports-section-premium">
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '60px' }} className="section-header">
-             <div>
-                <span style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.875rem', letterSpacing: '2px' }}>STUDENT LIFE</span>
-                <h2 style={{ fontSize: '3rem', marginTop: '10px' }}>Sports & Recreation</h2>
-             </div>
-             <button style={{ backgroundColor: 'transparent', border: '1px solid var(--outline-variant)', padding: '12px 24px', borderRadius: '4px', fontWeight: '600' }}>View All Facilities</button>
+          <div className="section-header-refined">
+             <h2 className="section-title-premium">Campus Life & Recreation</h2>
+             <p className="section-subtitle-premium">Experience a vibrant campus life with world-class sports and leisure facilities.</p>
           </div>
-          <div className="sports-grid">
+          <div className="sports-grid-premium">
             {[
               { name: 'Championship Football', img: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018' },
               { name: 'Elite Basketball', img: 'https://images.unsplash.com/photo-1546519638-68e109498ffc' },
               { name: 'Cricket League', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da' },
               { name: 'Aquatics Center', img: 'https://images.unsplash.com/photo-1519315901367-f34ff9154487' }
             ].map((sport, idx) => (
-              <motion.div key={idx} {...fadeInUp} className="sport-card">
-                <div className="sport-image-container">
-                  <img src={`${sport.img}?auto=format&fit=crop&q=80&w=600`} alt={sport.name} className="sport-image" />
-                  <div className="sport-overlay">
-                     <h4 style={{ color: 'white', fontSize: '1.25rem' }}>{sport.name}</h4>
-                  </div>
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                className="sport-card-premium"
+              >
+                <img src={`${sport.img}?auto=format&fit=crop&q=80&w=600`} alt={sport.name} className="sport-image-premium" />
+                <div className="sport-overlay-premium">
+                   <h4 className="sport-name-premium">{sport.name}</h4>
                 </div>
               </motion.div>
             ))}
@@ -396,47 +467,57 @@ function App() {
       </section>
 
       {/* Course Search Section */}
-      <section id="courses" style={{ padding: '100px 0', backgroundColor: 'var(--surface)' }}>
+      <section id="courses" className="courses-section">
         <div className="container">
-          <div style={{ marginBottom: '60px' }}>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '24px' }}>Search for a course</h2>
-            <div className="course-search-bar">
-               <input 
-                 type="text" 
-                 placeholder="Search by keyword (e.g. BTech, MBBS, Medical)..." 
-                 className="course-search-input"
-                 value={courseSearch}
-                 onChange={(e) => setCourseSearch(e.target.value)}
-               />
-               <button className="course-search-btn">SEARCH</button>
+          <div className="section-header-refined">
+            <h2 className="section-title-premium">Our Premier Programs</h2>
+            <p className="section-subtitle-premium">Choose from a wide range of industry-aligned courses designed for success.</p>
+            
+            <div className="course-search-modern">
+               <div className="search-input-wrapper">
+                 <Search size={20} className="search-icon" />
+                 <input 
+                   type="text" 
+                   placeholder="What do you want to learn?" 
+                   className="modern-search-input"
+                   value={courseSearch}
+                   onChange={(e) => setCourseSearch(e.target.value)}
+                 />
+               </div>
             </div>
           </div>
           
-          <div className="course-grid">
+          <div className="course-grid-refined">
             {filteredCourses.length > 0 ? (
               filteredCourses.map((course, idx) => (
                 <motion.div 
                   key={idx} 
-                  className="course-card"
-                  initial={{ opacity: 0, y: 20 }}
+                  className="course-card-premium"
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: (idx % 3) * 0.1 }}
                 >
-                  <img src={course.img} alt={course.title} className="course-image" />
-                  <div className="course-content">
-                    <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '700' }}>{course.category}</span>
-                    <h3 style={{ margin: '8px 0 16px', fontSize: '1.25rem' }}>{course.title}</h3>
-                    <a href="#admission" style={{ color: 'var(--secondary)', fontWeight: '600', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      Apply to Program <ArrowRight size={14} />
+                  <div className="course-img-wrapper">
+                    <img src={course.img} alt={course.title} className="course-image-modern" />
+                    <span className="course-tag">{course.category}</span>
+                  </div>
+                  <div className="course-info-premium">
+                    <div className="course-meta">
+                      <span className="course-duration"><BookOpen size={14} /> {course.duration}</span>
+                    </div>
+                    <h3 className="course-title-modern">{course.title}</h3>
+                    <p className="course-desc-modern">{course.desc}</p>
+                    <a href="#admission" className="course-cta-modern">
+                      View Details <ChevronRight size={16} />
                     </a>
                   </div>
                 </motion.div>
               ))
             ) : (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
-                <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>No courses found matching "{courseSearch}"</p>
-                <button onClick={() => setCourseSearch('')} style={{ marginTop: '16px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '700' }}>Clear Search</button>
+              <div className="no-results-premium">
+                <p>No courses found matching "{courseSearch}"</p>
+                <button onClick={() => setCourseSearch('')} className="clear-search-btn">Clear Search</button>
               </div>
             )}
           </div>
@@ -470,11 +551,13 @@ function App() {
       </section>
 
       {/* Graduates Section */}
-      <section id="graduates" style={{ padding: '80px 0', textAlign: 'center', backgroundColor: '#fcfcfc' }}>
+      <section id="graduates" className="graduates-section-premium">
         <div className="container">
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '12px' }}>Introducing the Graduates</h2>
-          <p style={{ opacity: 0.6, marginBottom: '40px', maxWidth: '600px', margin: '0 auto 40px' }}>Meet the cohort of 2024, shaping the world with innovation and integrity.</p>
-          <div className="graduates-grid-compact">
+          <div className="section-header-refined">
+            <h2 className="section-title-premium">Meet Our Graduates</h2>
+            <p className="section-subtitle-premium">The future leaders of 2025, ready to make their mark on the world.</p>
+          </div>
+          <div className="graduates-grid-premium">
              {[
                "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
@@ -483,22 +566,20 @@ function App() {
                "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
                "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d",
                "https://images.unsplash.com/photo-1521119989659-a83eee488004",
-               "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
-               "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04",
-               "https://images.unsplash.com/photo-1552058544-f2b08422138a",
-               "https://images.unsplash.com/photo-1580489944761-15a19d654956",
-               "https://images.unsplash.com/photo-1531123897727-8f129e1688ce",
-               "https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee",
-               "https://images.unsplash.com/photo-1519345182560-3f2917c472ef",
-               "https://images.unsplash.com/photo-1527980965255-d3b416303d12",
-               "https://images.unsplash.com/photo-1517841905240-472988babdf9"
+               "https://images.unsplash.com/photo-1544005313-94ddf0286df2"
              ].map((img, i) => (
-                <div key={i} className="graduate-mini-card">
+                <motion.div 
+                  key={i} 
+                  whileHover={{ scale: 1.05 }}
+                  className="graduate-card-premium"
+                >
                    <img src={`${img}?auto=format&fit=crop&q=80&w=200`} alt="Graduate" />
-                </div>
+                </motion.div>
              ))}
           </div>
-          <a href="#contacts" style={{ display: 'inline-block', backgroundColor: 'var(--primary)', color: 'white', padding: '14px 32px', border: 'none', borderRadius: '4px', fontWeight: '700', textDecoration: 'none', marginTop: '30px', fontSize: '0.9rem' }}>MEET THE GRADUATES</a>
+          <div className="graduates-cta">
+            <a href="#contact-section" className="cta-button gold-btn">Join Our Alumni Network</a>
+          </div>
         </div>
       </section>
 
@@ -674,51 +755,52 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer id="contacts">
+      <footer className="footer-modern">
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-             <img src={`${import.meta.env.BASE_URL}logo_v2.png`} alt="Academic Excellence Logo" style={{ width: '80px', height: '80px', objectFit: 'contain' }} />
-             <div>
-                <h3 style={{ color: 'white', fontFamily: 'var(--font-headline)', fontSize: '1.8rem', lineHeight: 1.1 }}>Academic Excellence</h3>
-                <p style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '2px', marginTop: '4px' }}>INSTITUTE OF INDIA</p>
-             </div>
+          <div className="footer-grid-refined">
+            <div className="footer-brand-refined">
+              <div className="footer-logo-text-premium">Academic Excellence</div>
+              <p className="footer-desc-premium">
+                A leading institution dedicated to providing world-class education and shaping the future of global leaders.
+              </p>
+            </div>
+            
+            <div className="footer-col">
+              <h4 className="footer-col-title">Programs</h4>
+              <ul className="footer-links-list">
+                <li><a href="#courses" className="footer-link-premium">Engineering</a></li>
+                <li><a href="#courses" className="footer-link-premium">Medical Sciences</a></li>
+                <li><a href="#courses" className="footer-link-premium">Management</a></li>
+                <li><a href="#courses" className="footer-link-premium">Information Tech</a></li>
+              </ul>
+            </div>
+            
+            <div className="footer-col">
+              <h4 className="footer-col-title">Quick Links</h4>
+              <ul className="footer-links-list">
+                <li><a href="#about" className="footer-link-premium">About Us</a></li>
+                <li><a href="#admission" className="footer-link-premium">Admissions</a></li>
+                <li><a href="#faculty" className="footer-link-premium">Faculty</a></li>
+                <li><a href="#contact-section" className="footer-link-premium">Contact</a></li>
+              </ul>
+            </div>
+            
+            <div className="footer-col">
+              <h4 className="footer-col-title">Contact Us</h4>
+              <ul className="footer-links-list">
+                <li className="footer-link-premium">info@iiui.ac.in</li>
+                <li className="footer-link-premium">+91 120 123 4567</li>
+                <li className="footer-link-premium">Greater Noida, India</li>
+              </ul>
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '80px', paddingBottom: '40px', borderBottom: '1px solid rgba(255,255,255,0.1)' }} className="footer-top">
-             <div>
-                <p style={{ fontSize: '0.875rem', opacity: 0.6 }}>Our Address</p>
-                <p style={{ fontWeight: '600' }}>Plot No. 4, Knowledge Park III, Greater Noida, UP, India</p>
-             </div>
-             <div>
-                <button style={{ backgroundColor: 'var(--primary)', color: 'white', padding: '12px 24px', border: 'none', borderRadius: '4px', fontWeight: '700', cursor: 'pointer' }}>SUBSCRIBE NOW</button>
-             </div>
-          </div>
-          <div className="footer-grid">
-            <div>
-               <h4 style={{ color: 'white', marginBottom: '24px' }}>Admission</h4>
-               <a href="#" className="footer-link">Undergraduate</a>
-               <a href="#" className="footer-link">Postgraduate</a>
-               <a href="#" className="footer-link">Financial Aid</a>
-               <a href="#" className="footer-link">Open Days</a>
-            </div>
-            <div>
-               <h4 style={{ color: 'white', marginBottom: '24px' }}>Academic</h4>
-               <a href="#" className="footer-link">Schools</a>
-               <a href="#" className="footer-link">Faculties</a>
-               <a href="#" className="footer-link">Research Hub</a>
-               <a href="#" className="footer-link">Library</a>
-            </div>
-            <div>
-               <h4 style={{ color: 'white', marginBottom: '24px' }}>University</h4>
-               <a href="#" className="footer-link">About IIUI</a>
-               <a href="#" className="footer-link">Leadership</a>
-               <a href="#" className="footer-link">Careers</a>
-               <a href="#" className="footer-link">Governance</a>
-            </div>
-            <div>
-               <h4 style={{ color: 'white', marginBottom: '24px' }}>Contact</h4>
-               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={14} /> info@iiui.ac.in</div>
-               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={14} /> +91 120 123 4567</div>
-               <div className="footer-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={14} /> Greater Noida, India</div>
+          
+          <div className="footer-bottom-refined">
+            <p className="footer-copy">© 2024 Academic Excellence Institute. All rights reserved.</p>
+            <div className="footer-socials">
+              <a href="#" className="social-icon-btn"><ExternalLink size={18} /></a>
+              <a href="#" className="social-icon-btn"><Mail size={18} /></a>
+              <a href="#" className="social-icon-btn"><Phone size={18} /></a>
             </div>
           </div>
         </div>
